@@ -1,8 +1,18 @@
-#include <spdlog/spdlog.h>
+#include <CGCPP/Util/LoggerFactory.h>
+#include <CGCPP/System/BasicService.h>
+
+class MySvc : public CGCPP::BasicService
+{
+    public:
+        MySvc() : BasicService("mysvc") {}
+};
 
 int main()
 {
-    // We will use spdlog to say hello! 
-    // So that you can see that conan works :-)
-    spdlog::warn("Hello World!");
+    CGCPP::SetupLogging();
+
+    spdlog::info("App started!");
+
+    MySvc svc;
+    svc.Start();
 }
