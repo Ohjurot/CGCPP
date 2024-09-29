@@ -4,18 +4,20 @@
 -- PRODUCT NAME
 -- This the name used for the product provided by this repo
 -- (On windows used as the solution name)
-cmox_product_name = "MoxPP"
+cmox_product_name = "CGCPP"
 
 -- CONFIGURATIONS
 -- The first array _n are the configuration names
 -- The second array _d are the configuration debug flags 
 -- (use true on all debugging configurations)
 cmox_configurations_n = { 
-    "Debug",  
+    "Debug",
+    "Development",
     "Release",   
 }
 cmox_configurations_d = { 
     true,
+    false,
     false,
 }
 
@@ -40,11 +42,11 @@ cmox_src_folder = "src"
 -- "manual"         Projects are not loaded by the MoxPP
 --                  provide the "cmox_function_includeprojects"
 --                  function.
-cmox_project_architecture = "single" 
+cmox_project_architecture = "flat" 
 
 -- MACRO PREFIX
 -- This will be prepended to ALL non default macros
-cmox_macro_prefix = "MOXPP_"
+cmox_macro_prefix = "CGCPP_"
 
 -- UNITTEST
 -- This defines where to find the unit test code.
