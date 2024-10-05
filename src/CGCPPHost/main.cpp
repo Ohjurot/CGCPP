@@ -1,5 +1,7 @@
 #include <CGCPP/Util/LoggerFactory.h>
+#include <CGCPP/Util/SignalInterrupt.h>
 #include <CGCPP/System/BasicService.h>
+#include <CGCPP/System/ServiceManager.h>
 
 #include <httplib.h>
 
@@ -41,6 +43,7 @@ class WWWService : public CGCPP::BasicService
             if (!m_server.listen_after_bind())
             {
                 GetLogger()->error("Failed to start HTTP server!");
+                CGCPP::SignalInterrupt::SoftwareStop();
             }
         }
 
@@ -58,14 +61,19 @@ int main()
     using namespace std::chrono_literals;
 
     CGCPP::SetupLogging();
+    CGCPP::SignalInterrupt::Register();
 
     spdlog::info("App started!");
 
-    WWWService svc;
-    svc.Start();
+    CGCPP::ServiceManager services;
+    services.NewService<WWWService>();
 
-    std::this_thread::sleep_for(60s);
+    services.Start();
 
-    svc.Stop();
-    svc.Await();
+    while (!CGCPP::SignalInterrupt::CheckSignal())
+    {
+        std::this_thread::sleep_for(100ms);
+    }
+
+    services.Stop();
 }
