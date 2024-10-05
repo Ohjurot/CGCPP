@@ -6,6 +6,7 @@
 
 #include <string>
 #include <atomic>
+#include <chrono>
 #include <thread>
 #include <string_view>
 
@@ -17,8 +18,11 @@ namespace CGCPP
     class BasicService
     {
         public:
+            using clock = std::chrono::high_resolution_clock;
+
+        public:
             BasicService(std::string_view name);
-            ~BasicService();
+            virtual ~BasicService();
 
             /*!
              * @brief Starts the service
@@ -41,6 +45,27 @@ namespace CGCPP
              * @return Copy of logger 
              */
             inline const Logger& GetLogger() const { return m_logger; }
+
+            /*!
+             * @brief Is called when the services is started
+             */
+            virtual void OnStart() {};
+            
+            /*!
+             * @brief Ticked function into the services (run in a loop while keep running)
+             * @param deltaTime Delta in ms
+             */
+            virtual void OnUpdate(uint32_t deltaTime) {};
+            
+            /*!
+             * @brief Is called when the service should stop
+             */
+            virtual void OnStop() {};
+
+            /*!
+             * @brief Called on the actual thread termination
+             */
+            virtual void OnTerminate() {};
 
         private:
             /*!

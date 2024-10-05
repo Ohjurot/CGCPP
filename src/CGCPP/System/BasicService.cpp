@@ -22,7 +22,11 @@ void CGCPP::BasicService::Start()
 
 void CGCPP::BasicService::Stop()
 {
-    m_stopFlag = true;
+    if (!m_stopFlag)
+    {
+        OnStop();
+        m_stopFlag = true;
+    }
 }
 
 void CGCPP::BasicService::Await()
@@ -39,10 +43,19 @@ void CGCPP::BasicService::ThreadMain()
 
     GetLogger()->info("Service thread started");
 
+    OnStart();
+
+    auto lastTick = clock::now();
     while (!m_stopFlag)
     {
-        std::this_thread::sleep_for(100ms);
+        auto now = clock::now();
+        OnUpdate(std::chrono::duration_cast<std::chrono::milliseconds>(now - lastTick).count());
+        lastTick = now;
+
+        std::this_thread::sleep_for(1ms);
     }
+
+    OnTerminate();
 
     GetLogger()->info("Service thread stopped");
     m_runFlag.clear(std::memory_order_release);
